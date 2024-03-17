@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="predmeti" style="background-color: aquamarine; border: 1px solid darkcyan; border-radius: 5px; padding: 8px;"></div>
+    <button>Sortiraj predmete</button>
+
+    <script>
+        predmetiJSON = [
+            {
+                predmet: "Inzenjerska matematika",
+                espb: 7,
+                godina: 1
+            },
+            {
+                predmet: "Internet programiranje",
+                espb: 6,
+                godina: 3
+            },
+            {
+                predmet: "Objektno orijentisano projektovanje",
+                espb: 6,
+                godina: 2
+            },
+            {
+                predmet: "Integracija softverskih tehnologija",
+                espb: 6,
+                godina: 3
+            }
+        ]
+        predmetiDIV = document.querySelector("#predmeti");
+        dugme = document.querySelector("button");
+        ispisi();
+        dugme.addEventListener("click", function () {
+            sortiraj(predmetiJSON);
+            ispisi();
+        });
+
+        function sortiraj(json) {
+            let temp;
+            for (let i = 0; i < json.length - 1; i++) {
+                temp = i;
+                for (let j = i + 1; j < json.length; j++) {
+                    if (json[j].godina > json[temp].godina)
+                        temp = j;
+                }
+                if (temp != i) {
+                    [json[i], json[temp]] = [json[temp], json[i]]
+                }
+            }
+            ispisi();
+        }
+
+        function ispisi() {
+            predmetiDIV.innerHTML = "";
+            for (i in predmetiJSON) {
+                predmetiDIV.innerHTML += `<h3>${predmetiJSON[i].predmet}</h3>`;
+                predmetiDIV.innerHTML += `<p>ESPB: ${predmetiJSON[i].espb}</p>`;
+                predmetiDIV.innerHTML += `<p>Godina: ${predmetiJSON[i].godina}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

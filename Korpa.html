@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="unos_proizvoda">
+        <div>
+            <label for="">Naziv </label>
+            <input id="naziv_proizvoda" type="text">
+        </div>
+        <div>
+            <label for="">Cena </label>
+            <input id="cena_proizvoda" type="text">
+        </div>
+        <div>
+            <label for="">Kolicina </label>
+            <input id="kolicina_proizvoda" type="number">
+        </div>
+        <div>
+            <button onclick="DodajProizvod()">Dodaj proizvod</button>
+        </div>
+    </div>
+    <h3>Proizvodi</h3>
+    <div id="prikaz_proizvoda">
+
+    </div>
+    <h3>Korpa</h3>
+    <div id="prikaz_korpe">
+
+    </div>
+    
+    <script>
+        let proizvodi=[];
+        let korpa=[];
+        let nazivProizvoda=document.querySelector('#naziv_proizvoda');
+        let cenaProizvoda=document.querySelector('#cena_proizvoda');
+        let kolicinaProizvoda=document.querySelector('#kolicina_proizvoda');
+        let prikazProizvoda=document.querySelector('#prikaz_proizvoda');
+        let prikazKorpe=document.querySelector("#prikaz_korpe");
+        function PrikaziProizvode(){
+            prikazProizvoda.innerHTML="";
+            for (let p of proizvodi) {
+                prikazProizvoda.innerHTML+=`
+                    <div> ${p.naziv} ${p.cena} ${p.kolicina} 
+                        <button onclick="DodajUKorpu(${p.id})">Dodaj u korpu</button></div>
+                `
+            }
+        }
+        
+        function PrikaziKorpu(){
+            prikazKorpe.innerHTML="";
+            let suma=0;
+            for (let a of korpa) {
+                let p=DohvatiProizvodZaId(a.id);
+                suma+=a.kolicina*p.cena;
+                prikazKorpe.innerHTML+=`
+                    <div> ${p.naziv} <input onchange="PromeniVrednostProizovda(${korpa.indexOf(a)},this)" value="${a.kolicina}">X${p.cena} ${a.kolicina*p.cena} 
+                `
+            }
+            prikazKorpe.innerHTML+=`Vasa korpa iznosi ${suma}`
+        }
+
+        function DohvatiProizvodZaId(pid){
+            for (let p of proizvodi) {
+                if(p.id==pid){
+                    return p;
+                }
+            }
+            return undefined;
+        }
+
+        function PromeniVrednostProizovda(index,input){
+            korpa[index].kolicina=parseInt(input.value);
+            PrikaziKorpu();
+        }
+
+        function DodajUKorpu(pid){
+            let artikal={
+                id:pid,
+                kolicina:1
+            }
+            korpa.push(artikal);
+            PrikaziKorpu();
+        }
+
+        
+
+        function DodajProizvod(){
+            let id=0;
+            if(proizvodi.length!=0){
+                id=proizvodi[proizvodi.length-1].id;
+            }
+            let proizvod={
+                id:id+1,
+                naziv:nazivProizvoda.value,
+                cena:parseFloat(cenaProizvoda.value),
+                kolicina:parseInt(kolicinaProizvoda.value),
+            }
+            proizvodi.push(proizvod);
+            PrikaziProizvode();
+        }
+
+        
+    </script>
+</body>
+</html>

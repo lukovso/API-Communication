@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Studenti</h1>
+    <h4>Sortiranje
+        <select id="sortiranje">
+            <option value="ime">Rastuce po imenu</option>
+            <option value="-ime">Opadajuce po imenu</option>
+            <option value="prosecnaOcena()">Rastuce po proseku</option>
+            <option value="-prosecnaOcena()">Opadajuce po proseku</option>
+        </select>
+    </h4>
+    
+    <div id="prikaz_studenata"></div>
+    <h3>Unos studenta</h3>
+    <div id="unos_studenta">
+        <div>
+            <input type="text" placeholder="Ime">
+        </div>
+        <div>
+            <input type="text" placeholder="Prezime">
+        </div>
+        <div>
+            <input type="text" placeholder="Broj indeksa">
+        </div>
+        <div>
+            <button id="dodaj_studenta">Dodaj studenta</button>
+        </div>
+    </div>
+    <h3>Unos predmeta</h3>
+    <div id="unos_predmeta">
+        <div>
+            <input type="text" placeholder="Naziv">
+        </div>
+        <div>
+            <input type="text" placeholder="ESPB">
+        </div>
+        <div>
+            <input type="text" placeholder="Semstar">
+        </div>
+        <div>
+            <input type="text" placeholder="Ocena">
+        </div>
+        <div>
+            <button id="dodaj_predmet">Dodaj predmet</button>
+        </div>
+    </div>
+    <!-- <script type="module" src="./scripts/funckije.js"></script> -->
+    <script type="module">
+        import funcije from './scripts/funckije.js';
+        let prikazStudenata=document.querySelector("#prikaz_studenata");
+        window.onload=prikazStudenata;
+        document.querySelector("#dodaj_studenta").onclick=DodajStudenta;
+        function DodajStudenta(){
+            let unos=document.querySelectorAll("#unos_studenta input");
+            funcije.dodajStudenta(unos[0].value,unos[1].value,unos[2].value);
+            prikazStudenata.innerHTML=funcije.prikaziStudente();
+        }
+        document.querySelector("#dodaj_predmet").onclick=DodajPredmetStudentu;
+        function DodajPredmetStudentu(){
+            let idStudent=document.querySelector("input[type=checkbox]:checked").value;
+            let unos=document.querySelectorAll("#unos_predmeta input");
+            let predmet=funcije.napraviPredmet(unos[0].value,parseInt(unos[1].value),parseInt(unos[2].value),parseInt(unos[3].value))
+            funcije.dodajPredmet(idStudent,predmet);
+            prikazStudenata.innerHTML=funcije.prikaziStudente();
+        }
+        document.querySelector("#sortiranje").onchange=SortirajStudente;
+        function SortirajStudente(){
+            let kriterijum=document.querySelector("#sortiranje").value;
+            let sortOrder=1;
+            if(kriterijum.substr(0,1)=='-'){
+                sortOrder=-1;
+                kriterijum=kriterijum.substr(1);
+            }
+            if(kriterijum.includes('()')){
+                kriterijum=kriterijum.split('()')[0];
+                funcije.sortirajStudente((a,b)=>{
+                let result=a[kriterijum]()<b[kriterijum]()?-1:a[kriterijum]()>b[kriterijum]()?1:0;
+                return result*sortOrder;
+            })
+            }else{
+                funcije.sortirajStudente((a,b)=>{
+                let result=a[kriterijum]<b[kriterijum]?-1:a[kriterijum]>b[kriterijum]?1:0;
+                return result*sortOrder;
+            })
+            }
+            
+            prikazStudenata.innerHTML=funcije.prikaziStudente();
+        }
+    </script>
+</body>
+</html>

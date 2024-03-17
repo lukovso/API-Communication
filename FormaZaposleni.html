@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>Unos zaposlenih</h3>
+    <div id="unos_zaposlenih">
+        <div>
+            <label for="">Ime</label>
+            <input type="text">
+        </div>
+        <div>
+            <label for="">Prezime</label>
+            <input type="text">
+        </div>
+        <div>
+            <label for="">Broj radnih sati</label>
+            <input type="text">
+        </div>
+        <div>
+            <label for="">Koeficijent</label>
+            <input type="text">
+        </div>
+        <div>
+            <button onclick="DodajZaposlenog()">Dodaj zaposlenog</button>
+        </div>
+    </div>
+    <h3>Sortiranje i pretrazivanje</h3>
+    <div>
+        Nacin sortiranje
+        <select onchange="Sortiraj(this.value)">
+            <option value="ime">Rastuce po imenu</option>
+            <option value="-ime">Opadajuce po imenu</option>
+            <option value="plata()">Rastuce po plati</option>
+            <option value="-plata()">Opadajuce po plati</option>
+        </select>
+        Pretrazi <input type="text" onkeydown="Pretrazi(this.value)">
+    </div>
+    <h3>Prikaz zaposlenih</h3>
+    <div id="prikaz_zaposlenih"></div>
+    <script>
+        let spisak_zaposlenih=[]
+        let div_prikaz_zaposlenih=document.querySelector("#prikaz_zaposlenih")
+        class Zaposleni{
+            constructor(id,ime,prezime,br_sati,koeficijent){
+                this.id=id
+                this.ime=ime
+                this.prezime=prezime
+                this.br_sati=br_sati
+                this.koeficijent=koeficijent
+            }
+            plata() {
+                return this.br_sati*this.koeficijent
+            }
+            toHTML(){
+                return `
+                    <div>${this.ime} ${this.prezime} ${this.br_sati} ${this.koeficijent} ${this.plata()}
+                        <button onclick="IzmeniZaposlenog(${this.id},this)">Izmeni</button>
+                        <button onclick="ObrisiZaposlenog(${this.id})">Obrisi</button>
+                        </div>
+                `
+            }
+            izmeniHTML(){
+                return `
+                    <div>
+                        <input value="${this.ime}">
+                        <input value="${this.prezime}"> 
+                        <input value="${this.br_sati}"> 
+                        <input value="${this.koeficijent}">
+                        <button onclick="SnimiIzmene(${this.id},this)">Snimi izmene</button>
+                    </div>
+                `
+            }
+        }
+        function DodajZaposlenog(){
+            let podaci_zaposlenog_za_unos=document.querySelectorAll("#unos_zaposlenih input");
+            let novi_id=0
+            if(spisak_zaposlenih.length>0){
+                novi_id=spisak_zaposlenih[spisak_zaposlenih.length-1].id
+            }
+            let zaposleni=new Zaposleni(novi_id+1,podaci_zaposlenog_za_unos[0].value,
+                                               podaci_zaposlenog_za_unos[1].value,
+                                               parseInt(podaci_zaposlenog_za_unos[2].value),
+                                               parseFloat(podaci_zaposlenog_za_unos[3].value))
+            spisak_zaposlenih.push(zaposleni)
+            PrikaziZaposlene(spisak_zaposlenih)
+        }
+
+        function PrikaziZaposlene(niz){
+            div_prikaz_zaposlenih.innerHTML=``
+            for(let zaposleni of niz){
+                div_prikaz_zaposlenih.innerHTML+=zaposleni.toHTML()
+            }
+        }
+        function IzmeniZaposlenog(id_zaposlenog,el){
+            let zaposleni=spisak_zaposlenih.find(z=>z.id==id_zaposlenog)
+            let div=el.parentNode
+            div.innerHTML=zaposleni.izmeniHTML()
+        }
+        function SnimiIzmene(id_zaposlenog,el){
+            let zaposleni=spisak_zaposlenih.find(z=>z.id==id_zaposlenog)
+            let polja_za_izmenu=el.parentNode.querySelectorAll("input")
+            zaposleni.ime=polja_za_izmenu[0].value
+            zaposleni.prezime=polja_za_izmenu[1].value
+            zaposleni.br_sati=parseInt(polja_za_izmenu[2].value)
+            zaposleni.koeficijent=parseFloat(polja_za_izmenu[3].value)
+            PrikaziZaposlene(spisak_zaposlenih)
+        }
+        function ObrisiZaposlenog(id_zaposlenog){
+            spisak_zaposlenih=spisak_zaposlenih.filter(z=>z.id!=id_zaposlenog)
+            PrikaziZaposlene(spisak_zaposlenih)
+        }
+        function Sortiraj(kriterijum_sortiranje){
+            let sortOrder=1;
+            if(kriterijum_sortiranje.substr(0,1)=='-'){
+                sortOrder=-1;
+                kriterijum_sortiranje=kriterijum_sortiranje.substr(1);
+            }
+            if(kriterijum_sortiranje.includes('()')){
+                kriterijum_sortiranje=kriterijum_sortiranje.split('()')[0];
+                spisak_zaposlenih.sort((a,b)=>{
+                    let result=a[kriterijum_sortiranje]()<b[kriterijum_sortiranje]()?-1:a[kriterijum_sortiranje]()>b[kriterijum_sortiranje]()?1:0;
+                    return result*sortOrder;
+                })
+            }else{
+                spisak_zaposlenih.sort((a,b)=>{
+                    let result=a[kriterijum_sortiranje]<b[kriterijum_sortiranje]?-1:a[kriterijum_sortiranje]>b[kriterijum_sortiranje]?1:0;
+                    return result*sortOrder;
+                })
+            }
+            PrikaziZaposlene(spisak_zaposlenih)
+        }
+        function Pretrazi(kriterijum_pretrage){
+            PrikaziZaposlene(spisak_zaposlenih.filter(z=>z.ime.toLowerCase().includes(kriterijum_pretrage.toLowerCase()) || z.prezime.toLowerCase().includes(kriterijum_pretrage.toLowerCase())))
+        }
+    </script>
+</body>
+</html>

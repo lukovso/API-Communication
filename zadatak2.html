@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="tekst" placeholder="Unesite tekst" />
+    <button id="dugme">Dodajte tekst</button>
+    <div id="recenice">
+    </div>
+
+    <script>
+        input = document.querySelector("#tekst");
+        dugme = document.querySelector("#dugme");
+        recenice = document.querySelector("#recenice");
+        dugme.addEventListener("click", function() {
+            tekst = input.value;
+            recenice.innerHTML += `<p class="zadatak2-p" onmouseover="obojiTekst(this)">${tekst}</p>`;
+            input.value = null;
+        })
+
+        function obojiTekst(element) {
+            if (element.innerHTML.length>10)
+                element.style.color = "#b0003a"
+            else if (element.innerHTML.length<10)
+                element.style.color = "#651fff"
+        }
+    </script>
+</body>
+</html>

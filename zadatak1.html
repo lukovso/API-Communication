@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Zadatak 1</h1>
+    <div class="zadatak">
+        <p>U liste je potrebno razvrstati broj u zavisnosti da li je on paran ili neparan.</p>
+    </div>
+    <!-- Ne sme se menjati HTML struktura dokumenta -->
+    <label for="broj">Unesite broj:</label>
+    <input id="broj" type="number">
+    <button id="unosBroja">Unesite broj</button>
+    <div class="flex-container">
+        <div id="parniBrojevi">
+            <h3>Parni brojevi</h3>
+        </div>
+        <div id="neparniBrojevi">
+            <h3>Neparni brojevi</h3>
+        </div>
+    </div>
+    <script>
+        const inputBroj = document.querySelector("#broj");
+        const btnUnosBroja = document.querySelector("#unosBroja");
+        const ulParni = document.querySelector("#parniBrojevi");
+        const ulNeparni = document.querySelector("#neparniBrojevi");
+
+        btnUnosBroja.addEventListener('click', function () {
+            const broj = parseInt(inputBroj.value);
+            if (broj % 2 == 0) {
+                ulParni.innerHTML += `<p>${broj}</p>`;
+            } else {
+                ulNeparni.innerHTML += `<p>${broj}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
